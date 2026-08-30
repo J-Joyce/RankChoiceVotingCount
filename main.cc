@@ -50,9 +50,9 @@ int main (int argc, char const *argv[])
         
         while (input.length() != 0)
         {
-        temp = input;
-        temp = temp.substr(0, temp.find(','));
-        candidate temp_candidate(temp, 0, true, {});
+            temp = input;
+            temp = temp.substr(0, temp.find(','));
+            candidate temp_candidate(temp, 0, true, {});
             candidates.push_back(temp_candidate);
             if (temp.length() + 1 < input.length()) { input = input.substr(temp.length() + 1); }
             else { input = ""; }
@@ -78,18 +78,28 @@ int main (int argc, char const *argv[])
         {///finding the location of the 1 and putting it in the right location
             if (temp.at(j) == '1')
             {
-                candidates.at((j + 1) / 2).update_ballots(temp);
+                candidates.at(j / 2).update_ballots(temp);
             }
         }
     }
+
+    cout << candidates.at(3).get_ballots().size() << endl;
+
     ///setting the total number of votes
     for (size_t i = 0; i < candidates.size(); i++)
     {
+        cout << i << endl;
         candidates.at(i).set_total_votes(candidates.at(i).get_ballots().size());
+        cout << "hi" << endl;
     }
     
+    cout << "bye" << endl;
+
     total_votes = ballots.size();
 
+    cout << "wee" << endl;
+    cout << total_votes;
+    
     while (!winner)
     {///checking if any candidate has won the election
         for (size_t i = 0; i < candidates.size(); i++)
@@ -102,11 +112,6 @@ int main (int argc, char const *argv[])
         }///recounting votes
         if (!winner)
         {
-            round++;
-
-            ///DEBUGING
-            cout << "round: " << round << endl;
-
             smallest_vote = candidates.at(0).get_total_votes();
             loser_location = 0;
             for (size_t i = 0; i < candidates.size(); i++)
@@ -118,46 +123,35 @@ int main (int argc, char const *argv[])
                 }/// STILL NEED TO ADD IN CASE OF TIE
             }
 
-            ///DEBUGING
-            cout << "loser location: " << loser_location << endl;
-
+            char next_rank = '9';
+            cout << next_rank;
 
             ///recounting ballots
             candidates.at(loser_location).set_is_in_race(false);
             for (size_t i = 0; i < candidates.at(loser_location).get_ballots().size(); i++)
             {///finding the location of the highest candidate still in and the ballot in the right spot it in the right location
                 temp = candidates.at(loser_location).get_ballots().at(i);
+
                 for (size_t j = 0; j < temp.length(); j++)
-                {///the next highest ranked candidate is still in the race
-                    if (temp.at(j) == round && candidates.at((j + 1) / 2).get_is_in_race())
+                {
+                    if (next_rank > temp.at(j) && candidates.at((j + 1) / 2).get_is_in_race() && temp.at(j) != ',')
                     {
-                        candidates.at((j + 1) / 2).update_ballots(temp);
-                    }
-                    else if (temp.at(j) == round && !candidates.at((j + 1) / 2).get_is_in_race())
-                    {
-                        bool found = false;
-                        int temp_round = round + 1;
-                        int temp_location = -1;
-                        while (!found)
-                        {
-                            temp_location = temp.find('0' + temp_round);
-
-                            ///DEBUGING
-                            cout << "temp_location: " << temp_location;
-
-
-                            if (candidates.at((temp_location + 1) / 2).get_is_in_race())
-                            {
-                                candidates.at((temp_location + 1) / 2).update_ballots(temp);
-                                found = true;
-                            }
-                            temp_round ++;
-                        }
-                        
+                        next_rank = temp.at(j);
                     }
                 }
+                ///finding the next highest ranked candidate
+                int location = -1;
+                location = temp.find(next_rank);
+                candidates.at((location / 2)).update_ballots(temp);
             }
-            ///candidates.at(loser_location).set_ballots({});
+            candidates.at(loser_location).set_ballots({});
+
+            for (size_t i = 0; i < candidates.size(); i++)
+            {
+                candidates.at(i).set_total_votes(candidates.at(i).get_ballots().size());
+            }
+            
+            round++;
         }
     }
     
