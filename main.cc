@@ -92,6 +92,8 @@ int main (int argc, char const *argv[])
     }
     
     total_votes = ballots.size();
+
+    cout << total_votes << endl;
     
     while (!winner)
     {///checking if any candidate has won the election
