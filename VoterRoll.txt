@@ -5,5 +5,3 @@ james,john,lynda
 3,2,1
 2,3,1
 1,2,3
-
-james should win
