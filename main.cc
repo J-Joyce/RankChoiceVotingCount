@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <random>
 #include "candidate.h"
 
 using namespace std;
@@ -83,22 +84,14 @@ int main (int argc, char const *argv[])
         }
     }
 
-    cout << candidates.at(3).get_ballots().size() << endl;
 
     ///setting the total number of votes
     for (size_t i = 0; i < candidates.size(); i++)
     {
-        cout << i << endl;
         candidates.at(i).set_total_votes(candidates.at(i).get_ballots().size());
-        cout << "hi" << endl;
     }
     
-    cout << "bye" << endl;
-
     total_votes = ballots.size();
-
-    cout << "wee" << endl;
-    cout << total_votes;
     
     while (!winner)
     {///checking if any candidate has won the election
@@ -120,14 +113,33 @@ int main (int argc, char const *argv[])
                 {
                     smallest_vote = candidates.at(i).get_total_votes();
                     loser_location = i;
-                }/// STILL NEED TO ADD IN CASE OF TIE
+                }/// in case of a tie
+                else if (smallest_vote == candidates.at(i).get_total_votes() && candidates.at(i).get_is_in_race() && loser_location != i)
+                {
+                    cout << "Tie between: " << candidates.at(i).get_name() << " and " << candidates.at(loser_location).get_name() << endl;
+                    cout << "Coin flip goes to: ";
+                    random_device rd;
+                    mt19937 gen(rd());
+                    uniform_int_distribution<int> ranNumber(0,1);
+                    if (ranNumber(gen) == 0)
+                    {
+                        cout << candidates.at(i).get_name() << " Candidate " << candidates.at(loser_location).get_name() << " is eliminated" << endl;
+                    }
+                    else
+                    {
+                        cout << candidates.at(loser_location).get_name() << " Candidate " << candidates.at(i).get_name() << " is eliminated" << endl;
+                        smallest_vote = candidates.at(i).get_total_votes();
+                        loser_location = i;
+                    }
+                }
+                
             }
 
             char next_rank = '9';
-            cout << next_rank;
 
             ///recounting ballots
             candidates.at(loser_location).set_is_in_race(false);
+            cout << "Candidate: " << candidates.at(loser_location).get_name() << " is eliminated.\n";
             for (size_t i = 0; i < candidates.at(loser_location).get_ballots().size(); i++)
             {///finding the location of the highest candidate still in and the ballot in the right spot it in the right location
                 temp = candidates.at(loser_location).get_ballots().at(i);
