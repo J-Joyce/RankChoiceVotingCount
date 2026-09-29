@@ -10,7 +10,7 @@ int main (int argc, char const *argv[])
 {
     int winner_location = -1;
     int round = 2;
-    int loser_location = -1;
+    size_t loser_location = -1;
     int smallest_vote = 10000000;
     int total_votes = 0;
     bool winner = false;
@@ -137,13 +137,13 @@ int main (int argc, char const *argv[])
                 
             }
 
-            char next_rank = '9';
 
             ///recounting ballots
             candidates.at(loser_location).set_is_in_race(false);
             cout << "Candidate: " << candidates.at(loser_location).get_name() << " is eliminated.\n";
             for (size_t i = 0; i < candidates.at(loser_location).get_ballots().size(); i++)
             {///finding the location of the highest candidate still in and the ballot in the right spot it in the right location
+                char next_rank = '9';
                 temp = candidates.at(loser_location).get_ballots().at(i);
 
                 for (size_t j = 0; j < temp.length(); j++)
